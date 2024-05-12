@@ -1,7 +1,10 @@
+//below requires has to run once app server ran so this require part is import 
 require("./modules/userModule")
+require("./modules/trackModule")
 const express = require("express")
 const mongoose = require("mongoose")
 const authRoute = require("./routes/authRoutes")
+const tarkRoute = require("./routes/trackRoutes")
 const bodyParser = require("body-parser")
 const authRequire = require("./middleware/requireAuth")
 const app = express();
@@ -17,8 +20,9 @@ mongoose.connection.on("error", (err) => {
     console.log("MongoDB Connection Error", err);
 })
 
-app.use(bodyParser.json())
-app.use(authRoute)
+app.use(bodyParser.json());
+app.use(authRoute);
+app.use(tarkRoute);
 
 
 app.get('/', authRequire, (req, res) => {

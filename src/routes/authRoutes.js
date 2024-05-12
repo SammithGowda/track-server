@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const User = mongoose.model("User");
-const jwt =require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 
 router.post('/signup', async (req, res) => {
@@ -9,12 +9,40 @@ router.post('/signup', async (req, res) => {
     try {
         const user = new User({ email, password })
         await user.save()
-        const jwtToken = jwt.sign({userId:user._id},"MY_SECRET_KEY")
+        const jwtToken = jwt.sign({ userId: user._id }, "MY_SECRET_KEY")
 
-        res.send({jwtToken})
+        res.send({ jwtToken })
     } catch (error) {
         return res.status(422).send(error.message)
     }
+})
+
+router.post('/signin', async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        console.log("invalid pass and email");
+        return res.status(422).send({ error: "Must provide email and password !" })
+    }
+
+    const user = await User.findOne({ email }); //user info obj from mongo db
+
+    if (!user) {
+        console.log("user not found");
+        return res.status(401).send({ error: "Invalid email or password !" })
+    }
+
+    try {
+        await user.comparePassword(password); //if pass match
+        // create token
+        const token = jwt.sign({ userId: user._id }, "MY_SECRET_KEY")
+        res.send({ token })
+
+
+    } catch (error) {
+        return res.status(401).send({ error: "Invalid email or password !" })
+    }
+
 })
 
 module.exports = router;
