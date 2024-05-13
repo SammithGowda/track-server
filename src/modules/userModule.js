@@ -42,7 +42,6 @@ userSchema.pre('save', function (next) {
 //comparse pass
 userSchema.methods.comparePassword = function (candidatePassword) {
     //this ref to user here as well
-    console.log("hii");
     const user = this;
     return new Promise((resolve, reject) => {
         //compare pass

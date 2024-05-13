@@ -12,4 +12,21 @@ router.get('/tracks', async (req, res) => {
     return res.send({ tracks })
 })
 
+router.post('/track', async (req, res) => {
+    const { name, location } = req.body;
+    // console.log(req)
+
+    if (!name || !location) {
+        return res.status(401).send({ error: "Please provide name and location !" })
+    }
+
+    try {
+        const track = new Track({ name, location, userId: req.user._id })
+        await track.save();
+        res.status(201).send(track)
+    } catch (error) {
+        return res.status(402).send({ error: `error while creating ${error}` })
+    }
+})
+
 module.exports = router
