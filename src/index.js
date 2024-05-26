@@ -5,7 +5,7 @@ require("./modules/trackModule")
 const express = require("express")
 const mongoose = require("mongoose")
 const authRoute = require("./routes/authRoutes")
-const tarkRoute = require("./routes/trackRoutes")
+const trackRoute = require("./routes/trackRoutes")
 const bodyParser = require("body-parser")
 const authRequire = require("./middleware/requireAuth")
 const app = express();
@@ -13,19 +13,23 @@ const port = 3001
 const userName = process.env.MONGODB_USER
 const password = process.env.MONGODB_PASS
 const mongoUri = `mongodb+srv://${userName}:${password}-udemy@cluster0.p8gofmu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
-mongoose.connect(mongoUri)
 
-mongoose.connection.on("connected", () => {
-    console.log("MongoDb connected successfully !")
-})
+try {
+    mongoose.connect(mongoUri)
 
-mongoose.connection.on("error", (err) => {
-    console.log("MongoDB Connection Error", err);
-})
+    mongoose.connection.on("connected", () => {
+        console.log("MongoDb connected successfully !")
+    })
+
+    mongoose.connection.on("error", (err) => {
+    })
+} catch (error) {
+    console.log(`Error while Connecting to MongoDB ${error}`)
+}
 
 app.use(bodyParser.json());
 app.use(authRoute);
-app.use(tarkRoute);
+app.use(trackRoute);
 
 
 app.get('/', authRequire, (req, res) => {

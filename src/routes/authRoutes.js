@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.post('/signup', async (req, res) => {
     const { email, password } = req.body
+    console.log(email,password)
     try {
         const user = new User({ email, password })
         await user.save()
@@ -13,6 +14,7 @@ router.post('/signup', async (req, res) => {
 
         res.send({ jwtToken })
     } catch (error) {
+        console.log(error.message)
         return res.status(422).send(error.message)
     }
 })
