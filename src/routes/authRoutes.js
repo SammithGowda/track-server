@@ -6,15 +6,12 @@ const router = express.Router();
 
 router.post('/signup', async (req, res) => {
     const { email, password } = req.body
-    console.log(email,password)
     try {
         const user = new User({ email, password })
         await user.save()
-        const jwtToken = jwt.sign({ userId: user._id }, "MY_SECRET_KEY")
-
-        res.send({ jwtToken })
+        const token = jwt.sign({ userId: user._id }, "MY_SECRET_KEY")
+        res.send({ token })
     } catch (error) {
-        console.log(error.message)
         return res.status(422).send(error.message)
     }
 })
@@ -23,14 +20,12 @@ router.post('/signin', async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        console.log("invalid pass and email");
         return res.status(422).send({ error: "Must provide email and password !" })
     }
 
     const user = await User.findOne({ email }); //user info obj from mongo db
 
     if (!user) {
-        console.log("user not found");
         return res.status(401).send({ error: "Invalid email or password !" })
     }
 
