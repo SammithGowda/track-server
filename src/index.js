@@ -18,13 +18,12 @@ try {
     mongoose.connect(mongoUri)
 
     mongoose.connection.on("connected", () => {
-        console.log("MongoDb connected successfully !")
     })
 
     mongoose.connection.on("error", (err) => {
     })
 } catch (error) {
-    console.log(`Error while Connecting to MongoDB ${error}`)
+    return
 }
 
 app.use(bodyParser.json());
